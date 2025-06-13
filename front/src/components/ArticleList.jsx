@@ -67,10 +67,13 @@ export default function ArticleList() {
 }
 
 function ArticleCard({ article, onView, onEdit, onDelete }) {
+
+  const nav = useNavigate();
+
   return (
     <div className="article-card">
       <div className="article-title">{article.title}</div>
-      <div className="article-author">By {article.journalist}</div>
+      <div className="article-author">By <span onClick={() => nav(`/journalists/${article.journalistId}/articles`)} style={{ textDecoration: 'underline', cursor: 'pointer' }}>{article.journalist}</span></div>
 
       <div className="article-actions">
         <button className="button-tertiary" onClick={() => onEdit(article.id)}>

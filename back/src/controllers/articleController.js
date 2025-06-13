@@ -1,4 +1,4 @@
-import * as articleRepository from "../repositories/mockArticleRepository.js";
+import * as articleRepository from "../repositories/sqlArticleRepository.js";
 
 // TODO : Change articleRepository to use the sqlArticleRepository
 
@@ -62,6 +62,16 @@ export async function deleteArticle(req, res) {
     res.status(204).send();
   } catch (error) {
     console.error("Error deleting article:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+export async function getArticlesByJournalistId(req, res) {
+  try {
+    const articles = await articleRepository.getArticlesByJournalistId(req.params.id);
+    res.json(articles);
+  } catch (error) {
+    console.error("Error fetching articles:", error);
     res.status(500).json({ message: "Server error" });
   }
 }
