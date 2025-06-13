@@ -69,6 +69,9 @@ export default function JournalistArticles() {
 }
 
 function ArticleCard({ article, onView, onEdit, onDelete }) {
+
+  const nav = useNavigate();
+
   return (
     <div className="article-card">
       <div className="article-title">{article.title}</div>
