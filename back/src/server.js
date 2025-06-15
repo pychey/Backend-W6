@@ -2,6 +2,7 @@ import express, { json } from "express";
 import cors from "cors";
 import articleRouter from "./routes/articleRoutes.js";
 import journalistRouter from "./routes/journalistRoute.js";
+import categoryRouter from "./routes/categoryRoutes.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(json());
 
 app.use("/api/articles", articleRouter);
 app.use("/api/journalists", journalistRouter);
+app.use("/api/categories", categoryRouter);
 
 const PORT = 4000;
 app.listen(PORT, () => {

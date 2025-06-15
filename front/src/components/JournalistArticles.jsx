@@ -91,6 +91,11 @@ function ArticleCard({ article, onView, onEdit, onDelete }) {
           View
         </button>
       </div>
+      <div className="category-container">
+        {article.categoryNames.split(',').map((category,i) => (
+          <button key={i} className="button-secondary">{category}</button>
+        ))}
+      </div>
     </div>
   );
 }

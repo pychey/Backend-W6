@@ -2,13 +2,13 @@ import { pool } from "../utils/database.js";
 
 // Get all articles
 export async function getArticles() {
-    const [rows] = await pool.query("select a.*,j.name as journalist from articles a join journalists j on a.journalistId = j.id");
+    const [rows] = await pool.query("select a.*,j.name as journalist, group_concat(c.name) as categoryNames from articles a join journalists j on a.journalistId = j.id join articles_categories ac on a.id = ac.articleId join categories c on c.id = ac.categoryId group by a.id");
     return rows;
 }
 
 // Get one article by ID
 export async function getArticleById(id) {
-    const [row] = await pool.query("select a.*,j.name as journalist from articles a join journalists j on a.journalistId = j.id where a.id = ?", [id]);
+    const [row] = await pool.query("select a.*,j.name as journalist, group_concat(c.name) as categoryNames from articles a join journalists j on a.journalistId = j.id join articles_categories ac on a.id = ac.articleId join categories c on c.id = ac.categoryId where a.id = ?", [id]);
     return row[0];
 }
 
@@ -33,6 +33,6 @@ export async function deleteArticle(id) {
 }
 
 export async function getArticlesByJournalistId(journalistId) {
-    const [rows] = await pool.query("select a.*, j.name as journalist from articles a join journalists j on a.journalistId = j.id where a.journalistId = ?", [journalistId]);
+    const [rows] = await pool.query("select a.*, j.name as journalist, group_concat(c.name) as categoryNames from articles a join journalists j on a.journalistId = j.id join articles_categories ac on a.id = ac.articleId join categories c on c.id = ac.categoryId where j.id = ? group by a.id", [journalistId]);
     return rows;
 }

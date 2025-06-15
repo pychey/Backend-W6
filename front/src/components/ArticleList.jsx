@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getArticles, removeArticle } from "../services/api";
+import { getArticles, removeArticle, getCategories, getArticlesByCategoryIds } from "../services/api";
+import Select from 'react-select'
 
 //
 // ArticleList component
 //
 export default function ArticleList() {
+  const [categories, setCategories] = useState([]);
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -13,8 +15,36 @@ export default function ArticleList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchArticles(); // Fetch all articles when component mounts
+    fetchArticles();
+    fetchAllCategories();
   }, []);
+
+  const fetchArticlesByCategoryIds = async (categoryIds) => {
+    const categoryIdsByComma = categoryIds.join(',');
+    setIsLoading(true);
+    setError("");
+    try {
+      const data = await getArticlesByCategoryIds(categoryIdsByComma);
+      setArticles(data);
+    } catch (err) {
+      setError("Failed to load articles. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const fetchAllCategories = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (err) {
+      setError("Failed to load categories. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const fetchArticles = async () => {
     setIsLoading(true);
@@ -46,10 +76,17 @@ export default function ArticleList() {
 
   const handleEdit = (id) => navigate(`/articles/${id}/edit`);
 
+  const handleChange = async (selectedCategories) => {
+    if (selectedCategories.length > 0) await fetchArticlesByCategoryIds(selectedCategories.map(option => option.id));
+    else await fetchArticles();
+  };
+
   return (
     <>
       {isLoading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <Select options={categories} onChange={handleChange} isSearchable={false} placeholder='Select Categories ...'
+        getOptionLabel={(option) => option.name} getOptionValue={(option) => option.id} isMulti/>
       
       <div className="article-list">
         {articles.map((article) => (
@@ -88,6 +125,11 @@ function ArticleCard({ article, onView, onEdit, onDelete }) {
         <button className="button-secondary" onClick={() => onView(article.id)}>
           View
         </button>
+      </div>
+      <div className="category-container">
+        {article.categoryNames.split(',').map((category,i) => (
+          <button key={i} className="button-secondary">{category}</button>
+        ))}
       </div>
     </div>
   );

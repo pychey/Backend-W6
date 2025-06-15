@@ -137,7 +137,6 @@ button:hover {
   flex: 1 0 calc(25% - 16px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
   padding: 20px;
   border-radius: 15px;
@@ -169,6 +168,13 @@ button:hover {
 .article-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
+}
+
+.category-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
